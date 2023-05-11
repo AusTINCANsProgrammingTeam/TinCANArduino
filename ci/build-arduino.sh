@@ -23,6 +23,7 @@ arduino-cli core update-index
 arduino-cli core install arduino:avr
 
 # Install libraries
+set ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
 arduino-cli lib install --git-url https://github.com/Longan-Labs/Longan_CANFD.git
 arduino-cli lib install Adafruit_VL53L0X
 
