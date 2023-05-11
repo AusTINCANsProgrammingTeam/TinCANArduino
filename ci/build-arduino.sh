@@ -33,4 +33,5 @@ arduino-cli lib install Adafruit_VL53L0X
 # Compile all *.ino files for the Arduino Uno
 for f in **/*.ino ; do
     arduino-cli compile -b arduino:avr:leonardo $f
+    arduino-cli compile -b arduino:avr:leonardo --build-properties compiler.cpp.extra_flag=-DEBUG $f
 done
