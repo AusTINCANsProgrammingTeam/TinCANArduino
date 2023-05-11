@@ -18,7 +18,10 @@ const int SPI_CS_PIN = 17;
 const int CAN_INT_PIN = 7;
 const int LED_PIN = 13;
 
+uint16_t DEVICE_NUM_WITH_HEADER;
 uint8_t DEVICE_NUM = 0x00;
+
+const uint8_t DEVICE_NUM_VALID_HEADER = 0xAB; 
 const int EEPROM_DEV_NUM_ADDR = 0;
 
 const unsigned int ROBORIO_DEV_ID = 0x00;
@@ -78,7 +81,15 @@ void setup() {
     }
 
     // Get device number from non-volatile location
-    EEPROM.get(EEPROM_DEV_NUM_ADDR, DEVICE_NUM);
+    EEPROM.get(EEPROM_DEV_NUM_ADDR, DEVICE_NUM_WITH_HEADER);
+               
+    // If header byte doesn't match, then EEPROM has not been written before.
+    if (DEVICE_NUM_WITH_HEADER & 0x0FF != DEVICE_NUM_VALID_HEADER) {
+      DEVICE_NUM_WITH_HEADER = (DEVICE_NUM_VALID_HEADER + (((uint16_t)DEVICE_NUM) << 8);
+      EEPROM.write(EEPROM_DEV_NUM_ADDR, DEVICE_NUM_WITH_HEADER);
+    } else {
+      DEVICE_NUM = (uint8_t)(DEVICE_NUM_WITH_HEADER >> 8);
+    }
 
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, LOW);
@@ -115,7 +126,7 @@ void loop() {
           ledState = true;
         }
         if (id == SET_DEV_NUM_ID + DEVICE_NUM) {
-          EEPROM.write(EEPROM_DEV_NUM_ADDR, buf[0]);
+          EEPROM.write(EEPROM_DEV_NUM_ADDR, (DEVICE_NUM_VALID_HEADER + (((uint16_t)buf[0]) << 8));
         }
 
 #ifdef DEBUG
