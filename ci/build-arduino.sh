@@ -17,13 +17,16 @@ mkdir $HOME/Arduino/libraries
 export PATH=$PATH:$GITHUB_WORKSPACE/bin
 curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 arduino-cli config init
+
+# Enable "unsafe" library install methods
+sed -i "s/enable_unsafe_install: false/enable_unsafe_install: true/" /home/runner/.arduino15/arduino-cli.yaml
+
 arduino-cli core update-index
 
 # Install Arduino AVR core
 arduino-cli core install arduino:avr
 
 # Install libraries
-set ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
 arduino-cli lib install --git-url https://github.com/Longan-Labs/Longan_CANFD.git
 arduino-cli lib install Adafruit_VL53L0X
 
